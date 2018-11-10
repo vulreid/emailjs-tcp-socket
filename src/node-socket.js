@@ -7,7 +7,7 @@ export default class TCPSocket {
     return new TCPSocket({ host, port, options, tlsOptions })
   }
 
-  constructor ({ host, port, options }) {
+  constructor ({ host, port, options, tlsOptions }) {
     this.host = host
     this.port = port
     this.ssl = propOr(false, 'useSecureTransport')(options)
