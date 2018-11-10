@@ -3,8 +3,8 @@ import net from 'net'
 import tls from 'tls'
 
 export default class TCPSocket {
-  static open (host, port, options = {}) {
-    return new TCPSocket({ host, port, options })
+  static open (host, port, options = {}, tlsOptions = {}) {
+    return new TCPSocket({ host, port, options, tlsOptions })
   }
 
   constructor ({ host, port, options }) {
@@ -14,13 +14,14 @@ export default class TCPSocket {
     this.bufferedAmount = 0
     this.readyState = 'connecting'
     this.binaryType = propOr('arraybuffer', 'binaryType')(options)
+    this.tlsOptions = tlsOptions
 
     if (this.binaryType !== 'arraybuffer') {
       throw new Error('Only arraybuffers are supported!')
     }
 
     this._socket = this.ssl
-      ? tls.connect(this.port, this.host, { }, () => this._emit('open'))
+      ? tls.connect(this.port, this.host, this.tlsOptions, () => this._emit('open'))
       : net.connect(this.port, this.host, () => this._emit('open'))
 
     // add all event listeners to the new socket
